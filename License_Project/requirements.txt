@@ -1,0 +1,6 @@
+django
+django-environ
+cryptography
+requests
+whitenoise
+psycopg2-binary

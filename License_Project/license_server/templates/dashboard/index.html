@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | Central Brain{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="card stat-card">
+        <div class="stat-value" style="color: var(--primary);">{{ total_licenses }}</div>
+        <div class="stat-label">Total Licenses</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-value" style="color: var(--success);">{{ active_count }}</div>
+        <div class="stat-label">Active</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-value" style="color: var(--warning);">{{ pending_count }}</div>
+        <div class="stat-label">Pending Activation</div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-value" style="color: var(--danger);">{{ expired_count }}</div>
+        <div class="stat-label">Expired</div>
+    </div>
+</div>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2>Recent Licenses</h2>
+        <a href="{% url 'generate_license' %}" class="btn btn-primary">Generate New Key</a>
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>License Key</th>
+                    <th>Product</th>
+                    <th>User</th>
+                    <th>HWID</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for license in recent_licenses %}
+                <tr>
+                    <td style="font-family: monospace; font-weight: 700;">{{ license.key }}</td>
+                    <td>{{ license.product_name|default:"General License" }}</td>
+                    <td>
+                        <div style="font-weight: 600;">{{ license.client.name }}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">{{ license.client.email }}</div>
+                    </td>
+
+                    <td style="font-size: 0.8rem;">
+                        {% if license.hwid %}
+                            {{ license.hwid|truncatechars:20 }}
+                        {% else %}
+                            <span style="color: var(--text-muted);">Not Locked</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge 
+                            {% if license.status == 'Active' %}badge-active
+                            {% elif license.status == 'Expired' %}badge-expired
+                            {% elif license.status == 'Pending Activation' %}badge-pending
+                            {% else %}badge-suspended{% endif %}">
+                            {{ license.status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if license.hwid %}
+                        <form action="{% url 'reset_hwid' license.pk %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline btn-sm" onclick="return confirm('Are you sure you want to reset HWID for this license?')">Reset HWID</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-muted);">No licenses found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Generate License | Central Brain{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2>Generate New License Key</h2>
+        <a href="{% url 'client_list' %}" class="btn btn-outline btn-sm">+ New Client</a>
+    </div>
+    
+    <form method="post" class="license-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label">Product Name (Optional)</label>
+            {{ form.product_name }}
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+                Specify the software this key is for (e.g., "Wholesale POS").
+            </p>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Select Client Profile</label>
+            {{ form.client }}
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label class="form-label">Duration (Days)</label>
+                {{ form.duration_days }}
+            </div>
+            <div class="form-group">
+                <label class="form-label">Grace Period (Days)</label>
+                {{ form.grace_period_days }}
+            </div>
+        </div>
+        
+        <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 2;">Generate Key</button>
+            <a href="{% url 'dashboard_home' %}" class="btn btn-outline" style="flex: 1; text-align: center;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master License Management Server Dashboard">
+    <title>{% block title %}License Server{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1.1">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'dashboard_home' %}" class="logo">Central Brain</a>
+        <div class="nav-links">
+            <a href="{% url 'dashboard_home' %}" class="{% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}">Dashboard</a>
+            <a href="{% url 'client_list' %}" class="{% if request.resolver_match.url_name == 'client_list' %}active{% endif %}">Clients</a>
+            <a href="{% url 'generate_license' %}" class="{% if request.resolver_match.url_name == 'generate_license' %}active{% endif %}">Generate Key</a>
+            {% if user.is_authenticated %}
+
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline btn-sm" style="margin-left: 1rem;">Logout</button>
+            </form>
+            {% endif %}
+        </div>
+
+        <div class="user-info">
+            <span class="badge badge-active">Admin Session</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
